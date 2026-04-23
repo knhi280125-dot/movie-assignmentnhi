@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>電影查詢系統</title>
+</head>
+<body style="background-color: #ffe6f2; padding: 50px; font-family: Arial;">
+    <div style="background-color: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <form method="post" action="/searchQ">
+            <label style="font-weight: bold;">請輸入欲查詢的片名：</label>
+            <input type="text" name="MovieTitle" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;" />
+            <button type="submit" style="background-color: #ff66b2; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">
+                確定送出
+            </button>
+        </form>
+    </div>
+</body>
+</html>
