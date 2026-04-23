@@ -1,35 +1,21 @@
-from flask import Flask, render_template, request
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-app = Flask(__name__)
-
-# 初始化 Firebase
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-@app.route("/")
-def index():
-    return '<a href="/searchQ">[ 查詢即將上映電影 ]</a>'
-
 @app.route("/searchQ", methods=["POST", "GET"])
 def searchQ():
     if request.method == "POST":
         MovieTitle = request.form["MovieTitle"]
         info = ""
         collection_ref = db.collection("電影")
-        docs = collection_ref.order_by("showDate").get()
+        # Lấy tất cả phim ra luôn
+        docs = collection_ref.get() 
+        
         for doc in docs:
             電影資料 = doc.to_dict()
-            if MovieTitle in 電影資料["title"]:
-                info += "片名：" + 電影資料["title"] + "<br>"
-                info += "影片介紹：" + 電影資料["hyperlink"] + "<br>"
+            # Nếu để trống ô tìm kiếm hoặc nhập đúng tên thì đều hiện ra
+            if MovieTitle == "" or MovieTitle in 電影資料.get("title", ""):
+                info += "片名：" + str(電影資料.get("title", "無")) + "<br>"
+                info += "影片介紹：" + str(電影資料.get("hyperlink", "無")) + "<br>"
                 info += "片長：" + str(電影資料.get("showLength", "未知")) + " 分鐘<br>"
-                info += "上映日期：" + 電影資料["showDate"] + "<br><br>"
-        return info if info != "" else "抱歉，找不到資料。"
+                info += "上映日期：" + str(電影資料.get("showDate", "未知")) + "<br><br>"
+        
+        return info if info != "" else "Firebase đang trống, Nhi hãy thêm phim vào bảng 電影 nhé!"
     else:
         return render_template("input.html")
-
-if __name__ == "__main__":
-    app.run(debug=True)
